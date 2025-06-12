@@ -1,64 +1,97 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import Logo from './Logo';
+import { Home, Hammer, User, Mail } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const menuRef = useRef(null);
+  const backdropRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node) &&
+        backdropRef.current &&
+        backdropRef.current.contains(e.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Define navigation links
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Works', href: '/#works' },
-    { name: 'About', href: '/#about' },
-    { name: 'Contact', href: '/#contact' },
+    { name: 'Home', href: '/', icon: <Home className="w-5 h-5 mr-2" /> },
+    { name: 'Works', href: '/#works', icon: <Hammer className="w-5 h-5 mr-2" /> },
+    { name: 'About', href: '/#about', icon: <User className="w-5 h-5 mr-2" /> },
+    { name: 'Contact', href: '/#contact', icon: <Mail className="w-5 h-5 mr-2" /> },
   ];
 
-  // Function to handle smooth scrolling for hash links
   const handleNavClick = (e, href) => {
-    // If it's a hash link on the home page
+    if (href === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.history.pushState(null, '', '/');
+      return;
+    }
+
     if (href.startsWith('/#') && location.pathname === '/') {
       e.preventDefault();
       const targetId = href.replace('/#', '');
       const element = document.getElementById(targetId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
-        // Update URL without full page reload
         window.history.pushState(null, '', href);
       }
     }
   };
 
   return (
-    <nav className={`w-full py-4 sticky top-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/50 dark:bg-neo-dark-blue-bg/60 backdrop-blur-xl border-b border-white/20 dark:border-neo-dark-border/30 shadow-lg' 
-        : 'bg-white/20 dark:bg-neo-dark-blue-bg/30 backdrop-blur-lg'
+    <nav className={`w-full sticky top-0 z-50 transition-all duration-300 ${
+      isScrolled ? 'min-h-[56px] py-2' : 'min-h-[80px] py-5'
+    } ${
+      isScrolled
+        ? 'bg-white dark:bg-neo-dark-blue-bg border-b border-white/20 dark:border-neo-dark-border/30 shadow-lg'
+        : 'bg-white dark:bg-neo-dark-blue-bg'
     }`}>
       <div className="container-xl flex justify-between items-center">
         <div className="logo">
@@ -66,28 +99,27 @@ const Navbar = () => {
             <Logo />
           </Link>
         </div>
-        
+
         <div className="hidden md:flex space-x-8">
           {navLinks.map((link, index) => (
-            <Link 
+            <Link
               key={index}
-              to={link.href} 
+              to={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="font-display font-bold hover:text-neo-red dark:text-white dark:hover:text-neo-dark-red transition-colors relative group"
+              className="font-display font-bold flex items-center hover:text-neo-red dark:text-white dark:hover:text-neo-dark-red transition-colors relative group"
             >
+              {link.icon}
               {link.name}
               <span className="absolute left-0 bottom-0 w-0 h-1 bg-neo-red dark:bg-neo-dark-red transition-all duration-300 group-hover:w-full"></span>
             </Link>
           ))}
         </div>
-        
+
         <div className="flex justify-center items-center gap-4">
           <ThemeToggle />
-          
-          {/* Hamburger menu - hidden on md screens and above */}
           <div className="md:hidden">
-            <button 
-              onClick={toggleMobileMenu} 
+            <button
+              onClick={toggleMobileMenu}
               className={`${isMobileMenuOpen ? 'rotate-180 bg-neo-red/90 dark:bg-neo-dark-red/90' : 'bg-white/70 dark:bg-neo-dark-blue-box/80'} transition-all duration-300 transform neo-box p-1.5 relative z-50 backdrop-blur-lg rounded-md w-10 h-10 flex items-center justify-center border-2 hover:scale-105`}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -101,29 +133,37 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu - with improved glassmorphism */}
-      <div 
-        className={`fixed inset-0 z-40 bg-white/90 dark:bg-neo-dark-blue-bg/95 backdrop-blur-xl transform transition-all duration-500 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full hidden opacity-0 pointer-events-none'
+      {/* Backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          ref={backdropRef}
+          className="fixed inset-0 z-40 bg-black/50 dark:bg-black/70 backdrop-blur-sm transition-opacity duration-300"
+        />
+      )}
+
+      {/* Slide-in Side Menu */}
+      <div
+        ref={menuRef}
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm z-50 bg-white dark:bg-neo-dark-blue-bg shadow-2xl border-l border-black/10 dark:border-white/10 transform transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         } md:hidden`}
       >
-        <div className="container h-full flex flex-col items-center justify-center">
-          <div className="space-y-8">
-            {navLinks.map((link, index) => (
-              <div key={index} className="text-center">
-                <Link
-                  to={link.href}
-                  className="font-display font-bold text-2xl hover:text-neo-red dark:text-white dark:hover:text-neo-dark-red"
-                  onClick={(e) => {
-                    setIsMobileMenuOpen(false);
-                    handleNavClick(e, link.href);
-                  }}
-                >
-                  {link.name}
-                </Link>
-              </div>
-            ))}
-          </div>
+        <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-center py-12 space-y-8">
+          {navLinks.map((link, index) => (
+            <div key={index} className="text-center">
+              <Link
+                to={link.href}
+                className="font-display font-bold text-2xl flex items-center justify-center gap-2 text-black dark:text-white hover:text-neo-red dark:hover:text-neo-dark-red transition-colors"
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                  handleNavClick(e, link.href);
+                }}
+              >
+                {link.icon}
+                {link.name}
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
     </nav>

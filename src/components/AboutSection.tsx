@@ -13,7 +13,7 @@ const AboutSection = () => {
     { name: "Node.js", experience: "2 years" },
   ];
 
-  // Animation variants
+  //  Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

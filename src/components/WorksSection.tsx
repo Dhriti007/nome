@@ -47,9 +47,9 @@ const WorksSection = () => {
   return (
     <section id="works" className="py-20 relative overflow-hidden dark:bg-neo-dark-bg">
       {/* Background 3D elements */}
-      <div className="absolute w-40 h-40 bg-neo-red/10 dark:bg-neo-dark-red/10 border-2 border-neo-black/20 dark:border-neo-dark-border/20 rounded-full -top-10 -left-10 animate-float"></div>
-      <div className="absolute w-32 h-32 bg-neo-yellow/10 dark:bg-neo-dark-yellow/10 border-2 border-neo-black/20 dark:border-neo-dark-border/20 transform rotate-45 -bottom-10 right-1/4"></div>
-      <div className="absolute w-24 h-24 bg-neo-blue/10 dark:bg-neo-dark-blue/10 border-2 border-neo-black/20 dark:border-neo-dark-border/20 transform rotate-12 top-1/3 -right-5"></div>
+      <div className="absolute w-40 h-40 dark:invisible  bg-neo-red/10 dark:bg-neo-dark-red/10 border-2 border-neo-black/20 dark:border-neo-dark-border/20 rounded-full -top-10 -left-10 animate-float"></div>
+      <div className="absolute w-32 h-32 dark:invisible bg-neo-yellow/10 dark:bg-neo-dark-yellow/10 border-2 border-neo-black/20 dark:border-neo-dark-border/20 transform rotate-45 -bottom-10 right-1/4"></div>
+      <div className="absolute w-24 h-24 dark:invisible bg-neo-blue/10 dark:bg-neo-dark-blue/10 border-2 border-neo-black/20 dark:border-neo-dark-border/20 transform rotate-12 top-1/3 -right-5"></div>
       
       <div className="container-xl relative z-10">
         <motion.div

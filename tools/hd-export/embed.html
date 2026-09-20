@@ -1,0 +1,8 @@
+<!doctype html>
+<html><body style="margin:0">
+<iframe id="f" style="border:0;width:100vw;height:100vh"></iframe>
+<script>
+  const u = new URL(location.href);
+  document.getElementById('f').src = u.searchParams.get('src');
+</script>
+</body></html>

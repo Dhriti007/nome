@@ -1,99 +1,107 @@
-
 export interface Project {
-  id: number;
+  id: string;
   title: string;
   description: string;
   image: string;
-  fullDescription?: string;
-  technologies?: string[];
   category: string;
+  group: 'product' | 'branding' | 'graphic';
+  year: string;
+  role: string;
+  disciplines: string[];
   link: string;
   featured?: boolean;
 }
 
 export const projects: Project[] = [
   {
-    id: 1,
-    title: "Neo-Brutalist Portfolio",
-    description: "A cutting-edge portfolio website with neo-brutalism design principles and interactive elements.",
-    fullDescription: "This portfolio website showcases the unique aesthetic of neo-brutalism combined with modern web technologies. The design features bold geometric shapes, high contrast colors, and raw visual elements that create a distinctive digital experience. Interactive elements and smooth animations enhance user engagement while maintaining the brutalist design language.",
-    technologies: ["React", "TypeScript", "Tailwind CSS", "Framer Motion", "Three.js"],
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-    category: "web",
-    link: "#",
-    featured: true
+    id: 'xposure',
+    title: 'Xposure',
+    description: 'A dark, editorial multi-page website that lets imagery lead — desktop and mobile.',
+    image: '/project-assets/xposure/frames-grid.jpg',
+    category: 'Website · UI/UX',
+    group: 'product',
+    year: '2024',
+    role: 'UI/UX Designer',
+    disciplines: ['UX Design', 'UI Design', 'Responsive'],
+    link: 'https://www.figma.com/design/pZPAgzLpD6H5e5tuy6OpV4/Xposure-web-page?node-id=0-1',
+    featured: true,
   },
   {
-    id: 2,
-    title: "Code Explorer App",
-    description: "Interactive code visualization tool that helps developers understand complex codebases.",
-    fullDescription: "The Code Explorer App transforms complex codebases into intuitive visual representations, making it easier for developers to understand and navigate large projects. The app analyzes code structures and dependencies, presenting them in an interactive map that users can explore and manipulate. Features include syntax highlighting, real-time collaboration, and intelligent search functionality.",
-    technologies: ["React", "D3.js", "Node.js", "Express", "MongoDB"],
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    category: "app",
-    link: "#",
-    featured: true
+    id: 'apertre-2',
+    title: 'Apertre 2.0',
+    description: "Resourcio Community's flagship event, redesigned as a space-age brand with a full design system.",
+    image: '/project-assets/apertre2/mascots.jpg',
+    category: 'Event Website',
+    group: 'product',
+    year: '2024',
+    role: 'Product Designer',
+    disciplines: ['UX Design', 'Design System', 'Illustration'],
+    link: 'https://www.figma.com/design/xFRRkOO25RpSK8CGsZrwpX/Apertre-2.0-Website?node-id=722-1417',
+    featured: true,
   },
   {
-    id: 3,
-    title: "Digital Art Collection",
-    description: "A gallery of digital art pieces created with modern design techniques.",
-    fullDescription: "This digital art collection showcases a series of experimental works that blend traditional art principles with digital manipulation techniques. The collection explores themes of technology, nature, and human connection through abstract and representational pieces. Each artwork is created using a combination of digital painting, procedural generation, and algorithmic effects.",
-    technologies: ["Procreate", "Adobe Creative Suite", "Blender", "WebGL"],
-    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-    category: "design",
-    link: "#",
-    featured: true
+    id: 'apertre-event-materials',
+    title: 'Apertre Event Materials',
+    description: 'The collateral kit that carried the Apertre brand from screen to the event floor.',
+    image: '/project-assets/apertre-events/doc-pages.jpg',
+    category: 'Event Branding',
+    group: 'branding',
+    year: '2025',
+    role: 'Brand Designer',
+    disciplines: ['Brand Design', 'Print', 'Communication'],
+    link: 'https://www.figma.com/design/JaeR9Ln20jrOFWT8GQEG57/Apertre-Event-Materials-page?node-id=0-1',
+    featured: true,
   },
   {
-    id: 4,
-    title: "Data Visualization Dashboard",
-    description: "Interactive dashboard with complex data visualizations and real-time updates.",
-    fullDescription: "This data visualization dashboard presents complex information in an accessible and engaging format. Users can interact with multiple data sets through customizable charts, graphs, and maps that update in real-time. The interface includes filtering options, comparison tools, and exportable reports, making it valuable for business intelligence and data analysis workflows.",
-    technologies: ["React", "D3.js", "Redux", "Firebase", "Recharts"],
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    category: "web",
-    link: "#",
-    featured: true
+    id: 'chaikkhana-cafe',
+    title: 'Chaikkhana Café',
+    description: 'A Bengali wordmark where the first character is a steaming cup of chai.',
+    image: '/project-assets/cafe/logo-main.jpg',
+    category: 'Brand Identity',
+    group: 'branding',
+    year: '2026',
+    role: 'Brand Designer',
+    disciplines: ['Logo Design', 'Typography'],
+    link: 'https://www.figma.com/design/GC0jt9fuSHiks9gqWs3ifb/Cafe-Logo-design?node-id=0-1',
+    featured: true,
   },
   {
-    id: 5,
-    title: "E-Commerce UI Kit",
-    description: "Comprehensive UI kit for modern e-commerce platforms with neo-brutalist elements.",
-    fullDescription: "This e-commerce UI kit provides a complete set of interface components designed with neo-brutalist aesthetics. The kit includes product cards, navigation elements, checkout flows, and user profile screens, all crafted to create a bold and memorable shopping experience. Each component is fully customizable and built with accessibility and performance in mind.",
-    technologies: ["Figma", "Adobe XD", "HTML/CSS", "JavaScript"],
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
-    category: "design",
-    link: "#"
+    id: 'resourcio',
+    title: 'Resourcio',
+    description: 'A soft-3D landing page that pitches the Resourcio community in one scroll.',
+    image: '/project-assets/resourcio/page-full.jpg',
+    category: 'Startup Website',
+    group: 'product',
+    year: '2026',
+    role: 'UI/UX Designer',
+    disciplines: ['UX Design', 'UI Design'],
+    link: 'https://www.figma.com/design/8HkhHrYCQMk30BDwukYBGh/StartUp_Resourcio_webdesign?node-id=0-1',
+    featured: false,
   },
   {
-    id: 6,
-    title: "Financial Analytics Tool",
-    description: "Real-time financial data analytics platform with advanced visualization capabilities.",
-    fullDescription: "The Financial Analytics Tool provides investors and analysts with powerful insights into market trends and financial performance. The platform processes real-time data from multiple sources, presenting it through interactive charts and customizable dashboards. Advanced features include predictive modeling, risk assessment tools, and automated report generation.",
-    technologies: ["Python", "React", "TensorFlow", "AWS", "PostgreSQL"],
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
-    category: "app",
-    link: "#"
+    id: 'tshirt',
+    title: 'T-Shirt Graphics',
+    description: 'Two apparel artworks — a duotone portrait and a painted emblem — on black and white tees.',
+    image: '/project-assets/tshirt/tee-black-portrait.jpg',
+    category: 'Apparel Design',
+    group: 'graphic',
+    year: '2024',
+    role: 'Graphic Designer',
+    disciplines: ['Graphic Design', 'Print'],
+    link: 'https://www.figma.com/design/x3hSLdCe5REEkWwG1NXg0x/t-shirt?node-id=0-1',
+    featured: false,
   },
   {
-    id: 7,
-    title: "Music Streaming Interface",
-    description: "Bold and playful music streaming interface with neo-brutalist design elements.",
-    fullDescription: "This music streaming interface reimagines the digital music experience through neo-brutalist design principles. The interface features unconventional layouts, exaggerated proportions, and high-contrast color schemes that create a distinctive visual identity. The player includes playlist management, discovery features, and social sharing options, all wrapped in an engaging brutalist aesthetic.",
-    technologies: ["React Native", "Electron", "Web Audio API", "Firebase"],
-    image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745",
-    category: "web",
-    link: "#"
+    id: 'book-publisher',
+    title: 'Book Publisher',
+    description: 'A publishing house site organised like a bookshop — window, shelves and spotlights.',
+    image: '/project-assets/bookpub/home.jpg',
+    category: 'Website · UI/UX',
+    group: 'product',
+    year: '2026',
+    role: 'UI/UX Designer',
+    disciplines: ['UX Design', 'IA', 'Responsive'],
+    link: 'https://www.figma.com/design/SY7f5ySqqvOU2FyU2Qnas7/Book-Publisher-Website?node-id=0-1',
+    featured: true,
   },
-  {
-    id: 8,
-    title: "Health & Fitness App",
-    description: "Mobile fitness tracking application with unique visual language and user experience.",
-    fullDescription: "The Health & Fitness App helps users track their wellness journey through a uniquely designed experience that stands out from typical fitness applications. The app monitors activity, nutrition, and sleep patterns, presenting data through bold visualizations and unconventional UI elements. Features include workout planning, progress tracking, and social challenges, all designed with an emphasis on motivation and engagement.",
-    technologies: ["React Native", "Firebase", "HealthKit", "Google Fit API"],
-    image: "https://images.unsplash.com/photo-1571019613576-2b22c76fd955",
-    category: "app",
-    link: "#"
-  }
 ];

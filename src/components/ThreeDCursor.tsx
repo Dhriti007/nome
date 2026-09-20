@@ -94,9 +94,17 @@ const ThreeDCursor: React.FC<ThreeDCursorProps> = ({
     
     window.addEventListener('resize', handleResize);
     
+    // Listen for theme changes
+    const observer = new MutationObserver(() => {
+      const isDarkModeNow = document.documentElement.classList.contains('dark');
+      particlesMaterial.color.set(isDarkModeNow ? darkModeColor : color);
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
     // Animation
+    let animationId = 0;
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       
       // Smooth follow
       mouse.target.x += (mouse.x - mouse.target.x) * 0.05;
@@ -117,12 +125,12 @@ const ThreeDCursor: React.FC<ThreeDCursorProps> = ({
     
     // Cleanup
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeChild(renderer.domElement);
-      }
-      
+      cancelAnimationFrame(animationId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      observer.disconnect();
+      renderer.domElement.remove();
+      renderer.dispose();
       
       // Dispose geometries and materials
       particlesGeometry.dispose();

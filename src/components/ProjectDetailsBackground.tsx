@@ -81,9 +81,11 @@ const ProjectDetailsBackground: React.FC = () => {
         ? [0xFF5340, 0xFFE86B, 0x4471FF, 0x4CEAD7] // Dark mode colors
         : [0xFF3A29, 0xFFE14D, 0x0037FF, 0x00D2B4]; // Light mode colors
       
-      const color = colors[Math.floor(Math.random() * colors.length)];
+      const colorIndex = Math.floor(Math.random() * colors.length);
+      const color = colors[colorIndex];
       const material = new THREE.MeshBasicMaterial({ color });
       const object = new THREE.Mesh(geometry, material);
+      object.userData.colorIndex = colorIndex;
       
       // Add black edges for neo-brutalist look
       const edgesGeometry = new THREE.EdgesGeometry(geometry);
@@ -127,8 +129,9 @@ const ProjectDetailsBackground: React.FC = () => {
     // Animation
     const clock = new THREE.Clock();
     
+    let animationId = 0;
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       
       const delta = clock.getDelta();
       
@@ -181,8 +184,16 @@ const ProjectDetailsBackground: React.FC = () => {
             mutation.target === document.documentElement) {
           const isDarkModeNow = document.documentElement.classList.contains('dark');
           
-          // Update edge colors for all objects
+          const palette = isDarkModeNow 
+            ? [0xFF5340, 0xFFE86B, 0x4471FF, 0x4CEAD7] // Dark mode colors
+            : [0xFF3A29, 0xFFE14D, 0x0037FF, 0x00D2B4]; // Light mode colors
+          
+          // Update fill and edge colors for all objects
           objects.forEach(obj => {
+            const colorIndex = obj.userData.colorIndex;
+            if (typeof colorIndex === 'number' && obj.material instanceof THREE.MeshBasicMaterial) {
+              obj.material.color.set(palette[colorIndex]);
+            }
             if (obj.children.length > 0 && obj.children[0] instanceof THREE.LineSegments) {
               (obj.children[0].material as THREE.LineBasicMaterial).color.set(
                 isDarkModeNow ? 0x1F2937 : 0x000000
@@ -197,13 +208,12 @@ const ProjectDetailsBackground: React.FC = () => {
     
     // Cleanup
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeChild(renderer.domElement);
-      }
-      
+      cancelAnimationFrame(animationId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
+      renderer.domElement.remove();
+      renderer.dispose();
       
       // Dispose geometries and materials
       objects.forEach(obj => {
@@ -213,6 +223,12 @@ const ProjectDetailsBackground: React.FC = () => {
         } else {
           obj.material.dispose();
         }
+        obj.children.forEach(child => {
+          if (child instanceof THREE.LineSegments) {
+            child.geometry.dispose();
+            (child.material as THREE.Material).dispose();
+          }
+        });
       });
     };
   }, []);

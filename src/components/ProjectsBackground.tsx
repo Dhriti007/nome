@@ -75,24 +75,27 @@ const ProjectsBackground: React.FC = () => {
     };
     
     // Colors for neo-brutalist objects - adjusted for dark mode
-    const colors = isDarkMode 
-      ? [0xFF5340, 0xFFE86B, 0x4471FF] // Dark mode colors
-      : [0xFF3A29, 0xFFE14D, 0x0037FF]; // Light mode colors
+    const lightColors = [0xFF3A29, 0xFFE14D, 0x0037FF]; // Light mode colors
+    const darkColors = [0xFF5340, 0xFFE86B, 0x4471FF]; // Dark mode colors
+    const colors = isDarkMode ? darkColors : lightColors;
     
     // Create multiple objects at different positions
     for (let i = 0; i < 15; i++) {
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      const colorIndex = Math.floor(Math.random() * colors.length);
+      const randomColor = colors[colorIndex];
       const size = Math.random() * 3 + 1;
       const x = (Math.random() - 0.5) * 60;
       const y = Math.random() * 15;
       const z = (Math.random() - 0.5) * 60;
       
-      createNeoObject(randomColor, size, new THREE.Vector3(x, y, z));
+      const obj = createNeoObject(randomColor, size, new THREE.Vector3(x, y, z));
+      obj.userData.colorIndex = colorIndex;
     }
     
     // Animation
+    let animationId = 0;
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       
       // Rotate objects slowly
       objects.forEach((obj, index) => {
@@ -129,8 +132,14 @@ const ProjectsBackground: React.FC = () => {
             gridHelper.material.color.set(isDarkModeNow ? 0x1E3A8A : 0x555555);
           }
           
-          // Update edge colors for all objects
+          const palette = isDarkModeNow ? darkColors : lightColors;
+          
+          // Update fill and edge colors for all objects
           objects.forEach(obj => {
+            const colorIndex = obj.userData.colorIndex;
+            if (typeof colorIndex === 'number' && obj.material instanceof THREE.MeshBasicMaterial) {
+              obj.material.color.set(palette[colorIndex]);
+            }
             if (obj.children.length > 0 && obj.children[0] instanceof THREE.LineSegments) {
               (obj.children[0].material as THREE.LineBasicMaterial).color.set(
                 isDarkModeNow ? 0x1F2937 : 0x000000
@@ -145,12 +154,11 @@ const ProjectsBackground: React.FC = () => {
     
     // Cleanup
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeChild(renderer.domElement);
-      }
-      
+      cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
+      renderer.domElement.remove();
+      renderer.dispose();
       
       // Dispose geometries and materials
       objects.forEach(obj => {
@@ -160,6 +168,12 @@ const ProjectsBackground: React.FC = () => {
         } else {
           obj.material.dispose();
         }
+        obj.children.forEach(child => {
+          if (child instanceof THREE.LineSegments) {
+            child.geometry.dispose();
+            (child.material as THREE.Material).dispose();
+          }
+        });
       });
     };
   }, []);

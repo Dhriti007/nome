@@ -1,13 +1,24 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 const NeoBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDarkMode = document.documentElement.classList.contains('dark');
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => document.documentElement.classList.contains('dark')
+  );
+
+  // Keep in sync with the theme toggle
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (isDarkMode || !containerRef.current) return;
     
     // Scene setup
     const scene = new THREE.Scene();
@@ -77,8 +88,9 @@ const NeoBackground: React.FC = () => {
     }
     
     // Animation
+    let animationId = 0;
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       
       // Rotate objects slowly
       objects.forEach((obj, index) => {
@@ -105,11 +117,10 @@ const NeoBackground: React.FC = () => {
     
     // Cleanup
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeChild(renderer.domElement);
-      }
-      
+      cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
+      renderer.domElement.remove();
+      renderer.dispose();
       
       // Dispose geometries and materials
       objects.forEach(obj => {
@@ -119,9 +130,15 @@ const NeoBackground: React.FC = () => {
         } else {
           obj.material.dispose();
         }
+        obj.children.forEach(child => {
+          if (child instanceof THREE.LineSegments) {
+            child.geometry.dispose();
+            (child.material as THREE.Material).dispose();
+          }
+        });
       });
     };
-  }, []);
+  }, [isDarkMode]);
 
   // Only show in light mode
   if (isDarkMode) return null;
@@ -129,7 +146,7 @@ const NeoBackground: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-50"
+      className="fixed inset-0 pointer-events-none z-0 opacity-50 dark:hidden"
     />
   );
 };

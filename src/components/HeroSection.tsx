@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, FileText } from 'lucide-react';
+import { ArrowRight, FileText, Download, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const HeroSection = () => {
   const skills = [
@@ -28,13 +29,8 @@ const HeroSection = () => {
     return () => clearInterval(glitchInterval);
   }, []);
 
-  // Function to handle the resume button click
-  const handleResumeClick = () => {
-    // For demonstration purposes, you might want to add the actual resume file
-    alert('Resume download would start here. Replace this with actual download functionality.');
-    // Alternatively, you could link to a PDF file:
-    // window.open('/path/to/resume.pdf', '_blank');
-  };
+  const resumeUrl = '/Dhritiman_Bhattacharjee_Product_Designer.pdf';
+  const [resumeOpen, setResumeOpen] = useState(false);
 
   return (
     <section
@@ -110,9 +106,9 @@ const HeroSection = () => {
                       <p className="dark:text-white">5+ Years Experience</p>
                     </div>
                     <button
-                      onClick={handleResumeClick}
+                      onClick={() => setResumeOpen(true)}
                       className="w-16 h-16 bg-neo-blue dark:bg-neo-dark-blue border-4 border-neo-black dark:border-neo-dark-border flex items-center justify-center hover:bg-neo-red dark:hover:bg-neo-dark-red transition-colors duration-200 group"
-                      aria-label="Download Resume"
+                      aria-label="Preview Resume"
                     >
                       <FileText className="text-white group-hover:scale-110 transition-transform" />
                     </button>
@@ -142,6 +138,41 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Resume Preview Modal */}
+      <Dialog open={resumeOpen} onOpenChange={setResumeOpen}>
+        <DialogContent className="max-w-4xl w-[95vw] h-[85vh] p-0 gap-0 bg-white dark:bg-neo-dark-box border-4 border-neo-black dark:border-neo-dark-border shadow-neo dark:shadow-neo-dark rounded-none flex flex-col">
+          <DialogHeader className="flex-row items-center justify-between p-4 border-b-4 border-neo-black dark:border-neo-dark-border space-y-0">
+            <DialogTitle className="font-display font-bold text-lg dark:text-white">Resume Preview</DialogTitle>
+            <div className="flex items-center gap-2 mr-8">
+              <a
+                href={resumeUrl}
+                download="Dhritiman_Bhattacharjee_Product_Designer.pdf"
+                className="px-3 py-1.5 border-2 border-neo-black dark:border-neo-dark-border bg-neo-yellow dark:bg-neo-dark-yellow font-display font-bold text-xs uppercase text-neo-black dark:text-neo-dark-blue-deep hover:bg-neo-black hover:text-white dark:hover:bg-neo-dark-border transition-colors duration-200 flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Download
+              </a>
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 border-2 border-neo-black dark:border-neo-dark-border bg-white dark:bg-neo-dark-bg font-display font-bold text-xs uppercase text-neo-black dark:text-white hover:bg-neo-black hover:text-white dark:hover:bg-neo-dark-border transition-colors duration-200 flex items-center gap-1.5"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Open
+              </a>
+            </div>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 bg-gray-100 dark:bg-neo-dark-bg">
+            <iframe
+              src={resumeUrl}
+              title="Resume Preview"
+              className="w-full h-full border-0"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
